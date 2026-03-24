@@ -1,0 +1,12 @@
+[project]
+name = "streamlit-app"
+version = "0.1.0"
+description = "Streamlit application for controlling the FastAPI API"
+dependencies = [
+    "streamlit",
+    "requests",
+    "loguru"
+]
+
+[tool.uv]
+package = true
