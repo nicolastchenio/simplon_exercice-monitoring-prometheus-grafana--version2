@@ -153,3 +153,11 @@ liste précise des tâches qu'il vous reste à accomplir, organisées par étape
   Mon conseil : Comme votre projet porte sur le Monitoring, montrer que vous savez configurer un système de logs robuste avec diagnostic intégré est un
   excellent point pour votre évaluation. Je vous suggère de les laisser, car ils vous aideront énormément si vous rencontrez une erreur lors du docker
   compose up.
+
+  ## amelioration personnel ##
+
+  - récupérer le contenu JSON ici : Grafana Dashboard 1860 JSON
+  (https://grafana.com/api/dashboards/1860/revisions/37/download).
+  - renommer  system_health.json dans dashboard (mais pas obligatoir)
+  - creer un dossier definitions et y mettre system_health.json 
+  - dans l interface grafana dans dasboard il apparaitra sous le nom "title": "Node Exporter Full", qui est dans le fichier system_health.json
