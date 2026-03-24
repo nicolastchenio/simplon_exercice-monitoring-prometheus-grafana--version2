@@ -59,3 +59,8 @@ async def metrics():
     # Mise à jour de la jauge CPU juste avant l'exposition des métriques
     CPU_USAGE.set(psutil.cpu_percent())
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+@app.get("/health")
+async def health_check():
+    logger.debug("Sonde uptime kuma")
+    return {"status":"ok", "message":"ok"}

@@ -153,3 +153,77 @@ liste précise des tâches qu'il vous reste à accomplir, organisées par étape
   Mon conseil : Comme votre projet porte sur le Monitoring, montrer que vous savez configurer un système de logs robuste avec diagnostic intégré est un
   excellent point pour votre évaluation. Je vous suggère de les laisser, car ils vous aideront énormément si vous rencontrez une erreur lors du docker
   compose up.
+
+## amelioration personnel ##
+   
+1) model 1860 (template dashboard grafana)
+- récupérer le contenu JSON ici : Grafana Dashboard 1860 JSON
+(https://grafana.com/api/dashboards/1860/revisions/37/download).
+- renommer  system_health.json dans dashboard (mais pas obligatoir)
+- creer un dossier definitions et y mettre system_health.json 
+- dans l interface grafana dans dasboard il apparaitra sous le nom "title": "Node Exporter Full", qui est dans le fichier system_health.json
+
+2) uptime kuma
+- modifier le docker-compose.yml
+     ```yaml
+          uptime-kuma:
+          image: louislam/uptime-kuma:1
+          container_name: uptime_kuma
+          ports:
+               - "3001:3001"
+          volumes:
+               - uptime-kuma-data:/app/data
+          networks:
+               - app_network
+          restart: unless-stopped
+     ```
+
+     et rajouter le volume uptime-kuma-data:
+     ```yaml
+          volumes:
+               grafana_data:
+               uptime-kuma-data:
+     ```
+     attention aussi au nom du networks que l on utilise par rapport au projet ou l on est
+
+- faire `docker compose up`
+
+- Accédez à Uptime Kuma : http://localhost:3001
+- Créez un compte administrateur.(exemple nicolas/nico1975/nico1975)
+- Cliquez sur le bouton vert **"Ajouter une sonde"** (Add New Monitor) en haut à gauche.
+  C'est ici que nous allons connecter Uptime Kuma à votre API Python.
+- Configurez la sonde pour surveiller votre API :
+    - **Type de sonde** : HTTP(s)
+    - **Nom** : API Health Check
+    - **URL** : `http://api:8080/health` => voir les infos dans le dockercompose pour container name et pour port
+    - Laissez les autres options par défaut et cliquez sur **Enregistrer** (Save) tout en bas.
+- dans main.py rajouter ce endpoint
+     ```
+     @app.get("/health")
+     async def health_check():
+          logger.debug("Sonde uptime kuma")
+          return {"status":"ok", "message":"ok"}
+     ```
+- faire `docker compose up --build`
+
+3) webhook
+Configurer les notifications Discord +Pour être alerté quand l'API tombe, nous allons utiliser un Webhook Discord. 
++1. Allez dans Paramètres (Settings) -> Notifications.
++2. Cliquez sur Configurer une notification (Setup Notification).
++3. Remplissez le formulaire :
+
+     Type de notification : Discord
+     Nom (Friendly Name) : Mon Alerte Discord
+     URL du Webhook Discord : https://discord.com/api/webhooks/1483569054072443120/c4p9k-b2Z3_t5NU9Q9GrELCRRVkimnVKe66w20XJVa4oPnXRVClVD156g3QfbhRs7946
+
+     Cliquez sur Tester pour vérifier que vous recevez bien un message sur Discord.
+     Cliquez sur Enregistrer (Save).
+
++4. Associer la notification à votre sonde :
+
+Retournez sur le Tableau de bord (Dashboard).
+Cliquez sur le bouton Modifier (Edit) à côté de votre sonde "API Health Check" (l'icône crayon).
+À droite, dans la section "Notifications", activez l'interrupteur pour "Mon Alerte Discord".
+Cliquez sur Enregistrer en bas de page.
+
+sur docker arreter le conteneur fastapi et voir si on a l alerte sur discord dans le salon du webhook discord

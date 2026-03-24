@@ -6,4 +6,4 @@ providers:
     editable: true
     updateIntervalSeconds: 10
     options:
-      path: "/etc/grafana/provisioning/dashboards"
+      path: "/etc/grafana/provisioning/dashboards/definitions"
